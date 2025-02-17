@@ -1,0 +1,135 @@
+body{
+    --nav-height: 50px;
+}
+#menu_toggle{
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    margin: 15px;
+    height: var(--nav-height);
+    width: var(--nav-height);
+    z-index: 100001;
+    background-color: var(--bc);
+    border: 1px solid var(--ac);
+}
+.navbar {
+    display: grid;
+    grid-template: "a nt" var(--nav-height)
+                   "nc nc" calc(100vh - var(--nav-height)) / auto 1fr;
+    background-image: url("../imgs/branche\ café\ isolé\ \(1\).svg");
+    background-size: calc(var(--nav-height) * 133 / 75) var(--nav-height);
+    background-repeat: no-repeat;
+    background-position: top;
+    background-color: var(--bc);
+
+    box-sizing: border-box;
+    position: fixed;
+    height: var(--nav-height);
+    width: 100%;
+    z-index: 100000;
+
+    border-bottom: 1px solid var(--ac);
+    color: var(--ac);
+    
+    transform: translatey(calc(-100%));
+    transition: transform 0.5s;
+    overflow: hidden;
+}
+.navbar.active{
+    background-color: hsl(from var(--bc) h s l / .6);
+    backdrop-filter: blur(10px);
+    background-size: 100% calc(100% * 75 / 133);
+    transition-property: height, background-color, background-size;
+    transition-duration: 1s;
+    transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    transform: translatey(0);
+    height: 100vh;
+}
+.navbar.seen{
+    transform: translatey(0);
+}
+.navbar a{
+    color: var(--ac);
+    font-size: 1.5em;
+    text-decoration: none;
+    font-family: achemost;
+    text-align: center;
+    margin: 0px var(--small-margin);
+    grid-area: a;
+    text-wrap: nowrap;
+}
+.navbar-brand{
+    place-self: center start;
+}
+
+.navbar-toggler {
+    grid-area: nt;
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    place-self: center end ;
+}
+
+.navbar-toggler-icon {
+    width: 25px;
+    height: 3px;
+    background-color: var(--ac2);
+    display: block;
+    margin: 5px 0;
+}
+
+.navbar-collapse {
+    grid-area: nc;
+    place-self: stretch stretch;
+    font-size: .8em;
+
+
+    position: relative;
+    width: 100%;
+}
+
+.navbar-nav {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin-left: var(--small-margin);
+    margin: 50px 0px;
+}
+.navbar hr{
+    width: 6em;
+    background-color: var(--ac);
+}
+.nav-link {
+    color: var(--ac2);
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+    .navbar {
+        grid-template: "a nc nt" 100% / auto 1fr auto;
+    }
+    #menu_toggle{
+        display: none;
+    }
+    .navbar-nav{
+        flex-direction: row;
+        place-self: end;
+    }
+    .navbar-nav hr{
+        display: none;
+    }
+}

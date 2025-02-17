@@ -1,0 +1,58 @@
+/* Custom styles */
+@font-face {
+    font-family: 'century-gothic';
+    src: url("fonts/centurygothic.ttf") format('truetype');
+}
+@font-face {
+    font-family: 'achemost';
+    src: url("fonts/Achemost.otf") format('opentype');
+}
+
+
+body {
+    font-family: 'Arial', sans-serif;
+    
+    --bc: #ECF6EC;
+    --c: black;
+    --ac2: #7F7D33;
+    --ac: #541E1E;
+    --out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --small-margin: 20px;
+    background-color: var(--bc);
+    font-family: century-gothic;
+    margin: 0px;
+}
+
+
+
+.cafe-header {
+    text-align: center;
+    margin: var(--small-margin) 0;
+    color: var(--ac2);
+}
+
+.cafe-menu {
+    margin: var(--small-margin) 0;
+}
+
+.cafe-footer {
+    text-align: center;
+    padding: var(--small-margin) 0;
+    background-color: #343a40;
+    color: white;
+}
+main{
+    position: relative;
+    overflow: hidden;
+}
+main>*{
+    margin: 0px var(--small-margin);
+}
+h1, h2{
+    font-family: achemost;
+    color: var(--ac);
+    height: 1em;
+}
+h2, h3{
+    letter-spacing: 2px;
+}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Café de Fa</title>
+    <link rel="stylesheet" href="srcs/Styles/main.css">
+    <link rel="stylesheet" href="srcs/Styles/navbar.css">
+    <link rel="stylesheet" href="srcs/Styles/logo.css">
+    <link rel="stylesheet" href="srcs/Styles/news_cards.css">
+    <link rel="stylesheet" href="srcs/Styles/news_cards_desktop.css">
+    <link rel="stylesheet" href="srcs/Styles/main_desktop.css">
+    <link rel="stylesheet" href="srcs/Styles/menu_toggle.css">
+    <link rel="stylesheet" href="srcs/Styles/informations.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <svg id="menu_toggle" xmlns="http://www.w3.org/2000/svg" onclick="toggle_nav(this)" viewBox="0 0 24 24">
+        <path class="p1" />
+        <path class="p2" />
+        <path class="p3" />
+    </svg>
+    <nav id="navbar" class="navbar" onclick="toggle_nav(this)">
+        <a class="navbar-brand" href="#">Café de Fa</a>
+        <button class="navbar-toggler" id="navbar-toggler" aria-label="Toggle navigation">
+            <a href="tel:0659639489">06 59 63 94 89</a>
+        </button>
+        <div class="navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#main">Acceuil</a>
+                </li>
+                <hr>
+                <li class="nav-item">
+                    <a class="nav-link" href="#news">Actualités</a>
+                </li>
+                <hr>
+                <li class="nav-item">
+                    <a class="nav-link" href="#infos">Informations</a>
+                </li>
+                <hr>
+                <li class="nav-item">
+                    <a class="nav-link" href="#menu">Menu</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main -->
+    <main id="main" class="cafe-main">
+        <div class="logo-bg-grad"></div>
+        <div class="logo" style="background-image: url('srcs/imgs/branche\ café\ isolé\ \(1\).svg');">
+            <h1>Café de Fa</h1>
+            <hr/>
+            <p>Café • Restauration • Epicerie • Bar</p>
+        </div>
+        
+        <section id="news" class="cafe-section">
+            <h2>Latest News</h2>
+            
+            <article class="card ovc_t no_bg">
+                <div class="bg" style="background-image: url('srcs/imgs/matrix/istockphoto-489377142-2048x2048.jpg');"></div>
+                <div class="bg grad"></div>
+                <div class="wrapper">
+                    <h3>Live Music Every Friday</h3>
+                    <div class="par ovct">
+                        <div>Join us every Friday for live music performances by local artists. Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium corporis nesciunt mollitia, sunt ab facilis magnam iusto eligendi numquam? Delectus placeat rem explicabo nisi hic laudantium possimus a ipsa minima!</div>
+                        <a href="#" class="btn">Learn More</a>
+                    </div>
+                </div>
+            </article>
+            <article class="card ovc_t">
+                <div class="bg" style="background-image: url('srcs/imgs/matrix/istockphoto-489377142-2048x2048.jpg');"></div>
+                <div class="bg grad"></div>
+                <div class="wrapper">
+                    <h3>Special Holiday Hours</h3>
+                    <div class="par ovct">
+                        <div>We have special hours during the holiday season. Check them out and plan your visit.</div>
+                        <a href="#" class="btn">View Hours</a>
+                    </div>
+                </div>
+            </article>
+            <article class="card ovc_t">
+                <div class="bg" style="background-image: url('srcs/imgs/matrix/img_bright.jpg');"></div>
+                <div class="bg grad"></div>
+                <div class="wrapper">
+                    <h3>New Coffee Blend Launched</h3>
+                    <div class="par ovct">
+                        <div>We are excited to announce the launch of our new coffee blend. Come and try it out! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates velit animi a eum tempora odit iure quibusdam, ipsam rerum optio molestias labore enim, est, iste fugiat soluta cum minus dicta? Lorem ipsum dolor, sit amet consectetur adipisicing elit. Deserunt ipsa eum repellat quidem corrupti accusamus voluptatem at modi, perferendis et. Omnis doloremque deserunt beatae architecto, dolore impedit? Quisquam, non explicabo!</div>
+                        <a href="#" class="btn">Read More</a>
+                    </div>
+                </div>
+            </article>
+            <nav id="news_nav" class="news-nav">
+                <div id="news_nav_btns">
+                    
+                </div>
+                <div id="timer">
+                    <div id="timer_bar" onanimationend="cards.timeout(this)"  class="timeon"></div>
+                </div> 
+                <div class="bg">
+
+                </div>
+            </nav>
+        </section>
+
+        <section id="infos" class="cafe-section">
+            <h2>Informations</h2>
+            <div class="wrapper">
+                <div id="story" class="info">
+                    <h3>Notre Histoire</h3>
+                    <div>
+                        <p>Découvrez l'histoire de notre café, de sa création à aujourd'hui.</p>
+                    </div>
+                </div>
+                <div id="map" class="info">
+                    <h3>Nous Trouver</h3>
+                        <div>
+                            <div class="mapouter">
+                                <div class="gmap_canvas">
+                                    <iframe width="600" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=place%20de%20la%20fontaine%20val%20du%20faby&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                                    <style>
+                                        .mapouter {
+                                            position: relative;
+                                            text-align: right;
+                                            height: 500px;
+                                            width: 100%;
+                                        }
+                                        .gmap_canvas {
+                                            overflow: hidden;
+                                            background: none !important;
+                                            height: 500px;
+                                            width: 100%;
+                                        }
+                                        iframe {
+                                            display: block;
+                                            width: 100%;
+                                            height: 100%;
+                                        }
+                                    </style>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div id="schedules" class="info">
+                    <h3>Nos Horaires</h3>
+                    <div>
+                        <table>
+                            <tr>
+                                <td>Lundi :</td>
+                                <td colspan="2">Fermé</td>
+                            </tr>
+                            <tr>
+                                <td>Mardi à Vendredi :</td>
+                                <td>8h30 - 15h</td>
+                                <td>18h - 22h30</td>
+                            </tr>
+                            <tr>
+                                <td>Samedi :</td>
+                                <td>9h30 - 15h</td>
+                                <td>18h - 23h00</td>
+                            </tr>
+                            <tr>
+                                <td>Dimanche :</td>
+                                <td colspan="2">9h30 - 16h</td>
+                            </tr>
+                            <tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="menu" class="cafe-section">
+            <h2>Our Menu</h2>
+            <p>Check out our menu and find your favorite coffee.</p>
+            <a href="#" class="btn">View Menu</a>
+        </section>
+        <section class="cafe-section">
+            <h2>Contact Us</h2>
+            <p>Get in touch with us and let us know how we can help.</p>
+            <a href="#" class="btn">Contact</a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cafe-footer">
+        <p>&copy; 2023 Café de Fa. All rights reserved.</p>
+    </footer>
+
+    <script src="srcs/scripts/main.js"></script>
+    <script src="srcs/scripts/nav.js"></script>
+    <script src="srcs/libs/OVC/ovc.js"></script>
+    <script src="srcs/scripts/cards.js"></script>
+</body>
+</html>

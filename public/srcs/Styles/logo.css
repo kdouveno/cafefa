@@ -1,0 +1,40 @@
+.logo-bg-grad{
+	display: none;
+}
+
+.logo{
+	text-align: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 25vh;
+	font-size: 1.5em;
+	z-index: 10000;
+
+}
+main>.logo{
+	margin: 0px;
+}
+
+.logo p{
+	font-size: 4vw;
+	margin: 0px;
+}
+.logo h1{
+	margin: var(--small-margin); 
+}
+@media screen and (min-width: 425px){
+	.logo p{
+		font-size: 17px;
+		transition: font-size var(--logo-transi-dur) var(--logo-transi);
+	}
+}
+
+.logo hr{
+    width: 50%;
+    height: 2px;
+    background-color: var(--ac);
+}

@@ -1,0 +1,44 @@
+td, th {
+	padding: 5px;
+	text-wrap: nowrap;
+}
+.info{
+	/* min-width: 400px; */
+}
+#schedules>div{
+	text-align:center;
+}
+#schedules table{
+	display: inline-table;
+	width: 100%;
+	max-width: 500px;
+}
+
+@media (min-width: 768px) {
+	
+	#infos>.wrapper{
+		display: grid;
+		text-align: center;
+		width: 100%;
+		grid-template: 
+			"story story" 1fr
+			"map time" 600px / 1fr 1fr;
+		gap: var(--small-margin);
+	}
+	#story{
+		grid-area: story;
+	}
+	#map{
+		grid-area: map;
+	}
+	#schedules{
+		grid-area: time;
+	}
+	
+}
+@media (min-width: 1440px) {
+	#infos>.wrapper{
+		grid-template: 
+			"story map time" 700px / 2fr 2fr 1fr;
+	}
+}
