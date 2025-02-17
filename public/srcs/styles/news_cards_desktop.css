@@ -29,46 +29,7 @@ main{
 }
 
 @media (min-width: 768px) {
-	.logo-bg-grad{
-		display: initial;
-		height: 10em;
-		width: 20em;
-		position: absolute;
-		background: radial-gradient(closest-side , hsl(from var(--bc) h s l / 1) 0%, hsl(from var(--bc) h s l / 0) 100%);
-		transform: translate(-50%, -50%) scale(2);
-		transition-property: width, height, transform;  
-		transition-duration: var(--logo-transi-dur);
-		transition-timing-function: var(--logo-transi);
-		filter: drop-shadow(-32px 46px 20px var(--bc)) drop-shadow(88px -4px 20px var(--bc));
-		z-index: 10;
-	}
-	.logo{
-		height: 7em;
-		width: 13em;
-		position: absolute;
-		z-index: 10;
-		transition-property: width, height, font-size; 
-		transition-duration: var(--logo-transi-dur);
-		transition-timing-function: var(--logo-transi);
-	}
-	main.first .logo{
-		width: 100vw;
-		height: 100vh;
-		font-size: 5em;
-	
-	}
-	@media screen and (min-width: 425px){
-		main.first .logo p{
-			font-size: 1em;
-			transition: font-size var(--logo-transi-dur) var(--logo-transi);
 
-		}
-	}
-	main.first .logo-bg-grad{
-		width: 100vw;
-		height: 100vh;
-		transform: translate(0px, 0px) scale(3);
-	}
 	#news{
 		height: 100vh;
 		position: relative;
