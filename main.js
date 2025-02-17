@@ -7,8 +7,11 @@ const port = 3000;
 // Serve static files from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 app.get('/', (req, res) => {
-	res.send('Welcome to Café de fa!');
+	res.render('layouts/index');
 });
 
 app.listen(port, () => {
