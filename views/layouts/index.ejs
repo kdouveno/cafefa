@@ -1,38 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Café de Fa</title>
-    <link rel="stylesheet" href="srcs/styles/main.css">
-    <link rel="stylesheet" href="srcs/styles/main_desktop.css">
-</head>
-<body>
 
-    <%- include('../views/nav.ejs') %>
-    <!-- Main -->
-    <main id="main" class="cafe-main">
-        <%- include('../views/logo.ejs') %>
-        <%- include('../views/news.ejs') %>
-        <section id="menu" class="cafe-section">
-            <h2>Our Menu</h2>
-            <p>Check out our menu and find your favorite coffee.</p>
-            <a href="#" class="btn">View Menu</a>
-        </section>
-        <section class="cafe-section">
-            <h2>Contact Us</h2>
-            <p>Get in touch with us and let us know how we can help.</p>
-            <a href="#" class="btn">Contact</a>
-        </section>
-    </main>
+<%- include('../views/header.ejs') %>
 
-    <!-- Footer -->
-    <footer class="cafe-footer">
-        <p>&copy; 2023 Café de Fa. All rights reserved.</p>
-    </footer>
+<%- include('../views/logo.ejs') %>
+<%- include('../views/news.ejs') %>
+<section id="menu" class="cafe-section">
+    <h2>Our Menu</h2>
+    <p>Check out our menu and find your favorite coffee.</p>
+    <a href="#" class="btn">View Menu</a>
+</section>
+<section class="cafe-section">
+    <h2>Contact Us</h2>
+    <p>Get in touch with us and let us know how we can help.</p>
+    <a href="#" class="btn">Contact</a>
+</section>
+<%- include('../views/footer.ejs') %>
 
-    <script src="srcs/scripts/main.js"></script>
-    <script src="srcs/libs/OVC/ovc.js"></script>
-    <script src="srcs/scripts/cards.js"></script>
-</body>
-</html>
