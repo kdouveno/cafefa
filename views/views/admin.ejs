@@ -1,1 +1,110 @@
-<h2>Admin TEST</h2>
+<section id="admin">
+	<nav id="admin_nav">
+		<ul>
+			<li><a href="#basics">Générale</a></li>
+			<li><a href="#articles">Articles</a></li>
+			<li><a href="#menu">Horaire</a></li>
+			<li><a href="#upload">Ressources</a></li>
+		</ul>
+	</nav>
+	<div id="basics">
+		<h2>Générale</h2>
+		<form id="update_basics">
+			<h3>Changer le mot de passe administrateur</h3>
+			<table>
+				<tr>
+					<td><label for="old-password">Ancien mot de passe</label></td>
+					<td><input type="password" name="old-password" id="old-password" placeholder="Ancien mot de passe"></td>
+				</tr>
+				<tr>
+					<td><label for="new-password">Nouveau mot de passe</label></td>
+					<td><input type="password" name="new-password" id="new-password" placeholder="Nouveau mot de passe"></td>
+				</tr>
+				<tr>
+					<td><label for="confirm-password">Confirmer le mot de passe</label></td>
+					<td><input type="password" name="confirm-password" id="confirm-password" placeholder="Confirmer le mot de passe"></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="articles">
+		<h2>Articles</h2>
+		<form action="">
+			<table>
+				<tr>
+					<td><label for="article-title">Titre</label></td>
+					<td><input type="text" id="article-title" name="article-title"></td>
+				</tr>
+				<tr>
+					<td><label for="cover">Image de couverture</label></td>
+					<td>
+						<select name="cover">
+							<option value="">-- choisir image --</option>
+							<option value="">-- uploader image --</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td><label for="start-date">Date de début</label></td>
+					<td><input type="date" id="start-date" name="start-date"></td>
+				</tr>
+				<tr>
+					<td><label for="end-date">Date de fin</label></td>
+					<td><input type="date" id="end-date" name="end-date"></td>
+				</tr>
+				<tr>
+					<td><label for="visibility-duration">Durée de visibilité</label></td>
+					<td><input type="number" id="visibility-duration" name="visibility-duration"></td>
+				</tr>
+				<tr>
+					<td><label for="timetable">Planning</label></td>
+					<td>
+						<select name="timetable">
+							<option value="">-- choisir planning --</option>
+							<option value="">-- uploader planning --</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td><label for="permanent">Permanent</label></td>
+					<td><input type="checkbox" name="permanent" id="permanent"></td>
+				</tr>
+				<tr>
+					<td><label for="article-content">Contenu</label></td>
+					<td><textarea id="article-content" name="article-content"></textarea></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button type="submit">Uploader</button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="menu">
+		<h2>Menu : A venir</h2>
+	</div>
+	<div id="upload">
+		<h2>Ressources</h2>
+		<form id="image" action="/imgupload" method="post" enctype="multipart/form-data">
+			<table>
+				<tr>
+					<td><label for="upload">Uploader une image</label></td>
+					<td><input type="file" id="upload" name="upload"></td>
+				</tr>
+				<tr>
+					<td><label for="name">Nommer l'image</label></td>
+					<td><input type="text" name="name" id="name"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button type="submit">Uploader</button></td>
+				</tr>
+				<tr>
+					<td colspan="2" id="imguploadres"></td>
+				</tr>
+			</table>
+		</form>
+		<form id="schedule" action="">
+			
+		</form>
+	</div>
+</section>
+<script src="srcs/scripts/admin.js"></script>
