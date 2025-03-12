@@ -11,3 +11,4 @@ class article {
 class timetable {
 	content = ["saturday", ["14:00-15:00", ""]]
 }
+

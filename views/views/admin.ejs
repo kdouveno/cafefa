@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="srcs/styles/db.css">
 <section id="admin">
 	<nav id="admin_nav">
 		<ul>
@@ -84,22 +85,7 @@
 	</div>
 	<div id="upload">
 		<h2>Ressources</h2>
-		<form id="image" action="/imgupload" method="post" enctype="multipart/form-data">
-			<table>
-				<tr>
-					<td><label for="upload">Uploader une image</label></td>
-					<td><input type="file" id="upload" name="upload"></td>
-				</tr>
-				<tr>
-					<td><label for="name">Nommer l'image</label></td>
-					<td><input type="text" name="name" id="name"></td>
-				</tr>
-				<tr>
-					<td colspan="2"><button type="submit">Uploader</button></td>
-				</tr>
-				<tr>
-					<td colspan="2" id="imguploadres"></td>
-				</tr>
+		
 			</table>
 		</form>
 		<form id="schedule" action="">
@@ -108,3 +94,4 @@
 	</div>
 </section>
 <script src="srcs/scripts/admin.js"></script>
+<script src="srcs/scripts/customForm.js"></script>

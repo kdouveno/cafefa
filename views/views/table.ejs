@@ -1,0 +1,35 @@
+<table class="db_table">
+	<thead>
+		<tr>
+			<th colspan="2">Colonnes</th>
+			<% for( let i = 0; i < structure.length; i++ ) { %>
+				<td><%= structure[i].column_name %></td>
+			<% } %>
+			<td>R</td>
+		</tr>
+		<tr>
+			<th colspan="2">Ajouter</th>
+			<% for( let i = 0; i < structure.length; i++ ) { %>
+				<td><input type="<%= data_type(structure[i].data_type) %>" name="<%= structure[i].column_name %>" placeholder="<%= structure[i].column_name %>"></td>
+			<% } %>
+			<td>A</td>
+		</tr>
+		<tr>
+			<th rowspan="2">Recherche</th>
+			<th>Max</th>
+			<% for( let i = 0; i < structure.length; i++ ) { %>
+				<% let daty = data_type(structure[i].data_type) %>
+				<td <% if (daty == "text") { %> rowspan="2" <% } %> ><input type="<%= daty %>" name="<%= structure[i].column_name %>" placeholder=" -- "></td>
+			<% } %>
+			<td rowspan="2">R</td>
+		</tr>
+		<tr>
+			<th>Min</th>
+			<% for( let i = 0; i < structure.length; i++ ) { %>
+				<% let daty = data_type(structure[i].data_type) %>
+				<% if (daty != "text") { %> <td><input type="<%= daty %>" name="<%= structure[i].column_name %>" placeholder=" -- "></td> <% } %>
+			<% } %>
+		</tr>
+	</thead>
+	<%- include('table_body.ejs', {data: ""}) %>
+</table>

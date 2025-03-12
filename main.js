@@ -1,33 +1,34 @@
 const express = require('express');
 const path = require('path');
-const { Client } = require('pg');
-const fs = require('fs');
+const DBEditor = require('./dbEditor');
 const expressSession = require('express-session');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
-const bodyParser = require("body-parser");
 const helmet = require('helmet');
-const { log } = require('console');
+const { Client } = require('pg');
 const app = express();
+const fs = require('fs');
 const port = 3000;
+
 
 // PostgreSQL connection setup
 const client = new Client({
     host: 'localhost',
-    port: 5432,
-    database: 'cafefa',
-    user: 'postgres',
-    password: 'abcd',
+	port: 5432,
+	database: 'cafefa',
+	user: 'postgres',
+	password: 'abcd',
 });
+const db = new DBEditor(client);
+
 client.connect();
 
 client.query(fs.readFileSync('structure.sql', 'utf8').toString(), (err, res) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
+	if (err) {
+		console.error(err);
+		return;
+	}
 });
-
 // Serve static files from the 'public' folder
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,6 +45,7 @@ app.use(expressSession({
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use("/db", db.router);
 app.disable('x-powered-by');
 
 app.get('/admin', (req, res) => {
@@ -68,25 +70,6 @@ app.post('/login', (req, res) => {
     } else {
         res.send('login failed');
     }
-});
-app.post('/imgupload', (req, res) => {
-    if(!req.session?.admin){
-        res.status(511).send({message: 'You are not authorized to upload images'});
-        return ;
-    }
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send({message: 'No files were uploaded.'});
-    }
-
-    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    let sampleFile = req.files.upload;
-
-    // Use the mv() method to place the file somewhere on your server
-    sampleFile.mv(__dirname + '/public/srcs/imgs/' + sampleFile.name, function(err) {
-        if (err)
-            return res.status(500).send(err);
-        res.send({message: 'File uploaded!'});
-    });
 });
 
 app.get('/', (req, res) => {
