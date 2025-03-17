@@ -15,28 +15,42 @@ function data_type(type){
 }
 
 class Table {
-	constructor(client, tableName) {
+	constructor(client, name) {
 		this.client = client;
-		this.tableName = tableName;
-		this.client.query(`SELECT column_name, data_type FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${tableName}'`, (err, res) => {
+		this.name = name;
+		this.client.query(`SELECT column_name, data_type FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${name}'`, (err, res) => {
 			if (err) {
 				console.error(err);
 				return;
 			}
 			this.structure = res.rows;
+			
+			this.client.query(`SELECT fieldname, inputtype, template FROM fields WHERE tablename = '${name}'`, (err, res) => {
+				if (err) {
+					console.error(err);
+					return;
+				}
+				let templates = {};
+				for (let o of res.rows) {
+					if (!templates[o.template])
+						templates[o.template] = [];	
+					templates[o.template].push({name: o.fieldname, input: o.inputtype});
+				}
+				this.templates = templates;
+			});
 		});
 		this.setRouter();
 	}
 	setRouter(){
 		let rtr = router();
 		rtr.get("/", (req, res) => {
-			res.render("views/table", {table: this.tableName, structure: this.structure, data_type: data_type});
+			res.render("views/table", {table: this.name, structure: this.templates.default});
 		});
 		rtr.post("/insert", (req, res) => {
-			console.log(this.tableName + " Insert");
+			console.log(this.name + " Insert");
 		});
 		rtr.post("/delete", (req, res) => {
-			console.log(this.tableName + " Delete");
+			console.log(this.name + " Delete");
 		});
 
 		this.router = rtr;
@@ -59,8 +73,6 @@ class DBEditor {
 				console.error(err);
 				return;
 			}
-			
-			
 			
 			for (let { table_name } of res.rows) {
 				

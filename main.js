@@ -56,6 +56,7 @@ app.get('/admin', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+    console.log(req.params);
     if (!req.body.password) {
         res.send('login failed');
     } else if (req.body.password === "sauce") {

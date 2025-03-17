@@ -2,32 +2,34 @@
 	<thead>
 		<tr>
 			<th colspan="2">Colonnes</th>
-			<% for( let i = 0; i < structure.length; i++ ) { %>
-				<td><%= structure[i].column_name %></td>
+			<% for( let field of structure ) { 
+				if (field.input.match(/id|system/)) continue ; %>
+				<td><%= field.name %></td>
 			<% } %>
 			<td>R</td>
 		</tr>
 		<tr>
 			<th colspan="2">Ajouter</th>
-			<% for( let i = 0; i < structure.length; i++ ) { %>
-				<td><input type="<%= data_type(structure[i].data_type) %>" name="<%= structure[i].column_name %>" placeholder="<%= structure[i].column_name %>"></td>
+			<% for( let field of structure ) { 
+				if (field.input.match(/id|system/)) continue ; %>
+				<td><input type="<%= field.input %>" name="<%= field.name %>" placeholder="<%= field.name %>"></td>
 			<% } %>
 			<td>A</td>
 		</tr>
 		<tr>
 			<th rowspan="2">Recherche</th>
 			<th>Max</th>
-			<% for( let i = 0; i < structure.length; i++ ) { %>
-				<% let daty = data_type(structure[i].data_type) %>
-				<td <% if (daty == "text") { %> rowspan="2" <% } %> ><input type="<%= daty %>" name="<%= structure[i].column_name %>" placeholder=" -- "></td>
+			<% for( let field of structure ) { 
+				if (field.input.match(/id|system/)) continue ; %>
+				<td <% if (field.input.match(/text|textarea/)) { %> rowspan="2" <% } %> ><input type="<%= field.input %>" name="<%= field.name %>" placeholder=" -- "></td>
 			<% } %>
 			<td rowspan="2">R</td>
 		</tr>
 		<tr>
 			<th>Min</th>
-			<% for( let i = 0; i < structure.length; i++ ) { %>
-				<% let daty = data_type(structure[i].data_type) %>
-				<% if (daty != "text") { %> <td><input type="<%= daty %>" name="<%= structure[i].column_name %>" placeholder=" -- "></td> <% } %>
+			<% for( let field of structure ) { 
+				if (field.input.match(/id|system/)) continue ; %>
+				<% if (!field.input.match(/text|textarea/)) { %> <td><input type="<%= field.input %>" name="<%= field.name %>" placeholder=" -- "></td> <% } %>
 			<% } %>
 		</tr>
 	</thead>
