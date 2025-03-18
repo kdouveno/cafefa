@@ -1,4 +1,5 @@
 const router = require('express').Router;
+const log = console.log;
 
 const data_types = {
 	"bigint": "number",
