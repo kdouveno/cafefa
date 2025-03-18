@@ -63,7 +63,7 @@ class DBEditor {
 		let tables = {};
 		rtr.use((req, res, next) => {
 			if (!req.session?.admin) {
-				res.status(511).send({message: 'You are not authorized, pls login'});
+				res.redirect(`/admin?redirect=${req.originalUrl}`);
 				return;
 			}
 			next();

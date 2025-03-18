@@ -56,7 +56,6 @@ app.get('/admin', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    console.log(req.params);
     if (!req.body.password) {
         res.send('login failed');
     } else if (req.body.password === "sauce") {
@@ -66,7 +65,7 @@ app.post('/login', (req, res) => {
             if (err) {
                 return res.send('Error saving session');
             }
-            res.redirect('/admin');
+            res.redirect(req.body.redirect ? req.body.redirect : '/admin');
         });
     } else {
         res.send('login failed');
