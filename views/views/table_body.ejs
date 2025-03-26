@@ -1,3 +1,13 @@
 <tbody>
-	
+	<% for(let tr of body) { %>
+		<tr>
+			<td colspan="2"></td>
+			<% for(let field of template) { 
+				
+				if (!field.input.match(/id|system/)) { %>
+				<td name="<%= field.name %>"><input type="<%= field.input == "file" ? "text" : field.input %>" value="<%= field.input == "datetime-local" ? (new Date(tr[field.name])).toISOString().slice(0, 16) : tr[field.name] %>"></td>
+
+			<% }} %>
+		</tr>
+	<% }; %>
 </tbody>

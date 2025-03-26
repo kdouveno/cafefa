@@ -1,19 +1,6 @@
 const router = require('express').Router;
-const log = console.log;
-
-const data_types = {
-	"bigint": "number",
-	"bigserial": "number",
-	"interval": "datetime-local",
-	"date": "date",
-	"timestamp": "datetime-local",
-	"integer": "number"
-};
-
-function data_type(type){
-	console.log(type);
-	return data_types[type] ?? "text";
-}
+const fs = require('fs');
+const path = require('path');
 
 class Table {
 	constructor(client, name) {
@@ -44,11 +31,35 @@ class Table {
 	}
 	setRouter(){
 		let rtr = router();
+		rtr.use((req, res, next) => {
+			if (req.files) {
+				req.body.$files = req.files;
+			}
+			next();
+		});
 		rtr.get("/", (req, res) => {
-			res.render("views/table", {table: this.name, structure: this.templates.default});
+			this.searchRequest(this.templates.default, {}).then(body => {
+				res.render("views/table", {table: this.name, template: this.templates.default, body});
+			}).catch(err => {
+				console.error(err);
+				res.status(500).send({"Internal Server Error": err.detail});
+			});
+		});
+		rtr.get("/search", (req, res) => {
+			this.searchRequest(this.templates.default, {}).then(body => {
+				res.render("views/table_body", {template: this.templates.default, body});
+			}).catch(err => {
+				console.error(err);
+				res.status(500).send({"Internal Server Error": err.detail});
+			});
 		});
 		rtr.post("/insert", (req, res) => {
-			console.log(this.name + " Insert");
+			this.insertRequest(req.body).then(body => {
+				res.render("views/table_body", {template: this.templates.default, body});
+			}).catch(err => {
+				console.error(err);
+				res.status(500).send({"Internal Server Error": err.detail});
+			});
 		});
 		rtr.post("/delete", (req, res) => {
 			console.log(this.name + " Delete");
@@ -56,6 +67,48 @@ class Table {
 
 		this.router = rtr;
 	};
+	insertRequest(body){
+		return new Promise((resolve, reject) => {
+			if (body.$files) {
+				for (const fileKey in body.$files) {
+					const file = body.$files[fileKey];
+					if (file.mimetype.startsWith('image/')) {
+						const uploadPath = path.join(__dirname, 'public', 'srcs', 'imgs', file.name);
+						fs.writeFileSync(uploadPath, file.data);
+						body[fileKey] = `/srcs/imgs/${file.name}`;
+					}
+				}
+			}
+			let query = `INSERT INTO ${this.name} (${Object.keys(body).join(",")}) VALUES (${Object.values(body).map(o=>`'${o}'`).join(",")})`;
+			this.client.query(query, (err, res) => {
+				if (err) {
+					console.error(err);
+					reject(err);
+					return;
+				}
+				resolve(res.rows);
+			});
+		});
+	}
+	searchRequest(template, body){
+		return new Promise((resolve, reject) => {
+			let select = this.templates.default.reduce((t, o, i)=>{
+				if (o.input !== "system") {
+					return t + (t ? " , " : "") + o.name;
+				}
+				return t;
+			}, "");
+			let query = `SELECT ${select} FROM ${this.name}`;
+			this.client.query(query, (err, res) => {
+				if (err) {
+					console.error(err);
+					reject(err);
+					return;
+				}
+				resolve(res.rows);
+			});
+		});
+	}
 }
 
 class DBEditor {

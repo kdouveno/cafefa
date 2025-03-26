@@ -1,7 +1,7 @@
 -- Database: cafefa
 
 -- DROP DATABASE IF EXISTS cafefa;
-
+-- DROP TABLE Fields;
 CREATE TABLE IF NOT EXISTS Fields (
 	tablename text,
 	fieldname text,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS Articles (
 	enddate date,
 	created_at timestamp default current_timestamp,
 	priooffset integer default 0,
-	headline interval default '2 weeks',
+	headline integer default '14',
 	visible boolean default true
 );
 
@@ -50,7 +50,7 @@ INSERT INTO Fields VALUES ('articles', 'visible', 'checkbox') ON CONFLICT DO NOT
 
 INSERT INTO Fields VALUES ('images', 'id', 'id') ON CONFLICT DO NOTHING;
 INSERT INTO Fields VALUES ('images', 'title', 'text') ON CONFLICT DO NOTHING;
-INSERT INTO Fields VALUES ('images', 'filename', 'text') ON CONFLICT DO NOTHING;
+INSERT INTO Fields VALUES ('images', 'filename', 'file') ON CONFLICT DO NOTHING;
 
 INSERT INTO Fields VALUES ('timetable', 'id', 'id') ON CONFLICT DO NOTHING;
 INSERT INTO Fields VALUES ('timetable', 'title', 'text') ON CONFLICT DO NOTHING;
