@@ -37,7 +37,7 @@ class Table {
 			}
 			next();
 		});
-		rtr.get("/", (req, res) => {
+		rtr.post("/", (req, res) => {
 			this.searchRequest(this.templates.default, {}).then(body => {
 				res.render("views/table", {table: this.name, template: this.templates.default, body});
 			}).catch(err => {
@@ -45,9 +45,9 @@ class Table {
 				res.status(500).send({"Internal Server Error": err.detail});
 			});
 		});
-		rtr.get("/search", (req, res) => {
+		rtr.post("/search", (req, res) => {
 			this.searchRequest(this.templates.default, {}).then(body => {
-				res.render("views/table_body", {template: this.templates.default, body});
+				res.render("views/table_body", {table: this.name, template: this.templates.default, body});
 			}).catch(err => {
 				console.error(err);
 				res.status(500).send({"Internal Server Error": err.detail});
@@ -91,6 +91,7 @@ class Table {
 		});
 	}
 	searchRequest(template, body){
+		//todo: add search request
 		return new Promise((resolve, reject) => {
 			let select = this.templates.default.reduce((t, o, i)=>{
 				if (o.input !== "system") {
