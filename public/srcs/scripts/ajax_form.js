@@ -5,8 +5,8 @@ class Ajax {
 	/**
 	 * Handles AJAX form submissions or manual form data processing.
 	 *
-	 * @param {Event} e - The event object, typically from a form submission.
-	 * @param {Function|string} fx - The callback function to handle the response, or a string referencing a method.
+	 * @param {Event|HTMLFormElement} e - The event object, typically from a form submission.
+	 * @param {Function|string|[Function|string]} fx - The callback function to handle the response, or a string referencing a method.
 	 * @param {Object} [options] - Optional configuration for manual form handling.
 	 * @param {string} options.action - The URL to which the form data will be submitted. (Required if not using a form element)
 	 * @param {string} options.method - The HTTP method to use for the request (e.g., "POST", "GET"). (Required if not using a form element)
@@ -20,42 +20,54 @@ class Ajax {
 	 *
 	 * @returns {boolean} Returns false to prevent default form submission behavior, or undefined if an error occurs.
 	 */
-	ajax(e, fx, options, ...parameters){
+	async ajax(e, fx, options, ...parameters){
 		let formData;
 		let action;
 		let method;
 		try {
-			if (typeof fx === "string"){
-				fx = this["$" + fx] ?? fx;
-			} else if (typeof fx !== "function"){
-				throw new Error("Invalid callback function.");
+			if (e instanceof Event) {
+				if(e.target.tagName !== 'FORM'){
+					if(!options) throw new Error("Options are not defined though target isn't a form.");
+					if(!options.action)
+						throw new Error("Form action is not defined.");
+					if(!options.method)
+						throw new Error("Form method is not defined.");
+					if(!options.form)
+						throw new Error("Form is not defined.");
+					action = options.action;
+					method = options.method;
+					formData = this.manualForm(options.form);
+				} else {
+					e.preventDefault();
+					e = e.target;
+				}
 			}
-			
-			if(e.target.tagName !== 'FORM' && options){
-				if(!options.action)
+			if (e instanceof HTMLFormElement) {
+				if (!e.action)
 					throw new Error("Form action is not defined.");
-				if(!options.method)
+				if (!e.method)
 					throw new Error("Form method is not defined.");
-				if(!options.form)
-					throw new Error("Form is not defined.");
-				action = options.action;
-				method = options.method;
-				formData = this.manualForm(options.form);
-			} else {
-				e.preventDefault();
-				if (!e.target.action)
-					throw new Error("Form action is not defined.");
-				if (!e.target.method)
-					throw new Error("Form method is not defined.");
-				action = e.target.action;
-				method = e.target.method;
-				formData = new FormData(e.target);
+				action = e.action;
+				method = e.method;
+				formData = new FormData(e);
 			}
-			const form = e.target;
-			fetch(action, { method: method, body: formData})
-			.then(res => fx(res, ...parameters));
+			if (!(fx instanceof Array))
+				fx = [fx];
+			fx = fx.map(f => {
+				if (typeof f === "string")
+					f = this["$" + f];
+				if (typeof f !== "function"){
+					throw new Error("Invalid callback function. Must be a function or a string referencing a method.");
+				}
+				return f;
+			});
+			let res = await fetch(action, { method: method, body: formData}).then(res => {if (res.error) throw new Error(res.error); return res;});
+			for(let f of fx){
+				res = await f(await res, ...parameters);
+			}
 		}catch(error) {
 			console.error("Error creating form:", error.message);
+			return false;
 		};
 		return false;
 	}
@@ -73,6 +85,7 @@ class Ajax {
 		res.text().then(html => {
 			target.innerHTML = html;
 		});
+		return res;
 	}
 }
 ajax = null;

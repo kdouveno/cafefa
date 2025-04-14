@@ -4,15 +4,29 @@ html, body {
     display: flex;
     flex-direction: column;
 }
-
+main {
+    container-type: size;
+    container-name: main;
+    height: calc(100vh - 20px); /* Full height minus any padding/margin */
+}
 #admin_wrapper {
-    margin-top: --nav-height; /* Adjust for the height of the navigation bar */
     display: grid;
-    grid-template-columns: 250px repeat(auto-fit, minmax(300px, 1fr)); /* Dynamically adjust for multiple sections */
+    grid-template-columns: 250px repeat(auto-fit, minmax(0px, 1fr)); /* Dynamically adjust for multiple sections */
+    grid-template-rows: 1fr; /* Dynamically adjust for multiple sections */
     height: calc(100vh - 20px); /* Full height minus any padding/margin */
     gap: 20px;
     padding: 10px;
     box-sizing: border-box;
+}
+
+@container main (max-aspect-ratio: 4/3) {
+    #admin_wrapper {
+        grid-template-columns: 1fr; /* Stack sections on smaller screens */
+        grid-template-rows: repeat(auto-fit, minmax(0px, 1fr)); /* Stack sections on smaller screens */
+    }
+    #admin_nav{
+        display: none; /* Hide navigation on smaller screens */
+    }
 }
 
 #admin_nav {

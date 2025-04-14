@@ -36,11 +36,11 @@ class AdminView {
                     method: "POST",
                     form:{default: true}
                 },
-                document.querySelector(`${targetId} .wrapper`)
+                document.querySelector(`${targetId} .db_wrapper`)
             );
+            targetSection.classList.add("loaded");
         }
         // Reset grid layout to show only one section
-        this.wrapper.classList.remove("split-view");
         this.sections.forEach(section => section.style.display = "none");
         targetSection.style.display = "block";
     }
@@ -66,5 +66,5 @@ class AdminView {
 
 // Initialize the AdminView class
 document.addEventListener('DOMContentLoaded', () => {
-    new AdminView("admin_wrapper", "admin_nav");
+    admin = new AdminView("admin_wrapper", "admin_nav");
 });

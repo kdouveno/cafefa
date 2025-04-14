@@ -62,7 +62,14 @@ class Table {
 			});
 		});
 		rtr.post("/delete", (req, res) => {
-			console.log(this.name + " Delete");
+			this.client.query(`DELETE FROM ${this.name} WHERE id = ${req.body.id}`, (err, result) => {
+				if (err) {
+					console.error(err);
+					res.status(500).send({"Internal Server Error": err.detail});
+					return;
+				}
+				res.send({success: true});
+			});
 		});
 
 		this.router = rtr;
