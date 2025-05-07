@@ -1,13 +1,32 @@
-<% for(let tr of body) { %>
-	<tr data-id="<%= tr.id %>">
+<% 
+function datetimeFormat(date){
+	if (date instanceof Date) {
+		console.log(date.toISOString());
+		let out = date.toLocaleString("fr-FR", {
+			day: "2-digit",
+			month: "2-digit",
+			year: "numeric",
+			hour: "2-digit",
+			minute: "2-digit"
+		});
+		console.log(out);
+		out = out.replace(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/, "$3-$2-$1T$4:$5");
+		console.log(out);
+
+		return out;
+	} else {
+		return null
+	}
+}
+
+for(let tr of body) { %>
+	<tr class="db_row" data-id="<%= tr.id %>">
 		<td colspan="2"></td>
 		<% for(let field of template) { 
-			
 			if (!field.input.match(/id|system/)) { %>
-			<td name="<%= field.name %>"><input type="<%= field.input == "file" ? "text" : field.input %>" value="<%= field.input == "datetime-local" ? (new Date(tr[field.name])).toISOString().slice(0, 16) : tr[field.name] %>"></td>
-
+			<td><input name="<%= field.name %>" class="db_input" type="<%= field.input == "file" ? "text" : field.input %>" value="<%= field.input == "datetime-local" ? (new Date(tr[field.name])).toISOString().slice(0, 16) : tr[field.name] %>"></td>
 		<% }} %>
-		<td><button class="db_delete" type="submit" name="delete" data-id="<%= tr.id %>" >D</button></td>
-		<td><button type="submit" name="update" value="<%= tr.id %>">U</button></td>
+		<td><button class="db_input db_delete" type="submit" name="delete" >D</button></td>
+		<td><button class="db_input db_update" type="submit" name="id" value="<%= tr.id %>">U</button></td>
 	</tr>
 <% }; %>

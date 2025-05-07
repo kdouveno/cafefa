@@ -7,14 +7,18 @@ class Table {
 			console.log("Table mutation observer triggered:", mutations);
 			mutations.forEach(m=>{	
 				m.addedNodes.forEach(node => {
+					if (node.nodeType !== Node.ELEMENT_NODE || !node.matches(".db_row")) return;
 					let del;
-					if (node.querySelector && (del = node.querySelector(".db_delete")))
+					del = node.querySelector(".db_delete")
+					if (node.querySelector && del)
 						del.addEventListener("click", () => this.delete(node));
+					del = node.querySelector(".db_update")
+					if (node.querySelector && del)
+						del.addEventListener("click", () => this.update(node));
 				});
 			});
 		});
-		mut.observe(this.table.querySelector("tbody"), { childList: true, subtree: true });
-		this.rows = this.table.querySelectorAll("tbody tr");
+		mut.observe(this.table.querySelector(".db_body"), { childList: true, subtree: true });
 		this.insertForm = document.getElementById(`db_${tableName}_insert`);
 		this.updateForm = document.getElementById(`db_${tableName}_update`);
 		this.searchForm = document.getElementById(`db_${tableName}_search`);
@@ -29,8 +33,19 @@ class Table {
 		this.insertForm.addEventListener("submit", (event) => ajax(event, ["inject", ()=>{
 				this.search();
 			}], null, document.querySelector(`#db_${this.tableName} .db_insert .res`)));
-		this.updateForm.addEventListener("submit", (event) => this.update(event));
 		this.searchForm.addEventListener("submit", (event) => this.search(event));
+		document.querySelectorAll(`#db_${this.tableName} .db_input.db_update`).forEach(input => {
+			input.addEventListener("click", (event) => {
+				event.preventDefault();
+				this.update(event.target.closest(".db_row"));
+				return false;
+			});
+		});
+		document.querySelectorAll(`#db_${this.tableName} .db_input.db_delete`).forEach(input => {
+			input.addEventListener("click", (event) => {
+				this.delete(event.target.closest(".db_row"));
+			});
+		});
 	}
 	delete(row){
 		console.log("Deleting row with id:", row.dataset.id);
@@ -47,31 +62,26 @@ class Table {
 			})
 			.catch(error => console.error("Error:", error));
 	}
-	update(){
+	update(row){
+		console.log("Updating row with id:", row.dataset.id);
 		
-		event.preventDefault();
-		const row = event.target.closest("tr");
-		if(!row) return;
-		const id = row.dataset.id;
-		const inputs = row.querySelectorAll("input");
-		for (let input of inputs){
-			input.setProperty("form", `db_${this.tableName}_update`);
-		}
-		const formData = new FormData(document.querySelector(`#db_${this.tableName}_update`));
-		formData.append("id", id);
-		fetch("/db/" + this.tableName + "/update", { method: "POST", body: formData})
-			.then(res => res.json())
-			.then(data => {
-				if(data.success){
-					row.innerHTML = data.html;
-				} else {
-					console.error("Error updating row:", data.error);
+		const inputs = row.querySelectorAll(".db_input:not([type='submit'])");
+		const form = {id: row.dataset.id};
+		inputs.forEach(input => {
+			if(input.type === "checkbox"){
+				form[input.name] = input.checked ? 1 : 0;
+			}else if(input.type === "radio"){
+				if(input.checked){
+					form[input.name] = input.value;
 				}
-			})
-			.catch(error => console.error("Error:", error));
+			}else{
+				form[input.name] = input.value;
+			}
+		});
+		ajax(null, "replace", {form: form, method: "POST", action: `/db/${this.tableName}/update`}, row);
 	}
 	search(event){
-		ajax(event ?? this.searchForm, "inject", null, document.querySelector(`#db_${this.tableName} tbody`));
+		ajax(event ?? this.searchForm, "inject", null, document.querySelector(`#db_${this.tableName} .db_body`));
 		return false;
 	}
 }

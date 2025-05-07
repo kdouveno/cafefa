@@ -28,6 +28,13 @@ class Ajax {
 			if (e instanceof Event) {
 				if(e.target.tagName !== 'FORM'){
 					if(!options) throw new Error("Options are not defined though target isn't a form.");
+						
+				} else {
+					e.preventDefault();
+					e = e.target;
+				}
+			}
+			if (options) {
 					if(!options.action)
 						throw new Error("Form action is not defined.");
 					if(!options.method)
@@ -37,10 +44,6 @@ class Ajax {
 					action = options.action;
 					method = options.method;
 					formData = this.manualForm(options.form);
-				} else {
-					e.preventDefault();
-					e = e.target;
-				}
 			}
 			if (e instanceof HTMLFormElement) {
 				if (!e.action)
@@ -71,19 +74,25 @@ class Ajax {
 		};
 		return false;
 	}
+
 	manualForm(form){
 		let formData = new FormData();
-		for(let o in Object.entries(form))
+		for(let o in form)
 			formData.append(o, form[o]);
 		return formData;
 	}
 	$inject(res, target){
-		if (res.error){
-			target.innerHTML = `<div class="alert alert-danger">${res.error}</div>`;
-			throw new Error(res.error);
-		}
 		res.text().then(html => {
 			target.innerHTML = html;
+		});
+		return res;
+	}
+	$replace(res, target){
+		res.text().then(html => {
+			target.insertAdjacentHTML("afterend", html);
+			console.log(html);
+			
+			target.remove();
 		});
 		return res;
 	}

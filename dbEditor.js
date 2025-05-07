@@ -71,6 +71,20 @@ class Table {
 				res.send({success: true});
 			});
 		});
+		rtr.post("/update", (req, res) => {
+			console.log("Updating row with id:", req.body.id);
+			let entries = Object.entries(req.body).filter(key => key !== "id");
+			let queryPairs = entries.map(([key, value]) => `${key} = '${value}'`).join(", ");
+			
+			this.client.query(`UPDATE ${this.name} SET ${queryPairs} WHERE id = ${req.body.id} RETURNING *`, (err, result) => {
+				if (err) {
+					console.error(err);
+					res.status(500).send({"Internal Server Error": err.detail});
+					return;
+				}
+				res.render("views/table_body", {template: this.templates.default, body: result.rows});
+			});
+		});
 
 		this.router = rtr;
 	};
