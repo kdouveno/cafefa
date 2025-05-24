@@ -9,9 +9,7 @@ function datetimeFormat(date){
 			hour: "2-digit",
 			minute: "2-digit"
 		});
-		console.log(out);
 		out = out.replace(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/, "$3-$2-$1T$4:$5");
-		console.log(out);
 
 		return out;
 	} else {
@@ -24,7 +22,7 @@ for(let tr of body) { %>
 		<td colspan="2"></td>
 		<% for(let field of template) { 
 			if (!field.input.match(/id|system/)) { %>
-			<td><input name="<%= field.name %>" class="db_input" type="<%= field.input == "file" ? "text" : field.input %>" value="<%= field.input == "datetime-local" ? (new Date(tr[field.name])).toISOString().slice(0, 16) : tr[field.name] %>"></td>
+			<td><input name="<%= field.name %>" class="db_input" type="<%= field.input == "file" ? "text" : field.input %>" value="<%= field.input == "datetime-local" ? datetimeFormat(tr[field.name]) : tr[field.name] %>"></td>
 		<% }} %>
 		<td><button class="db_input db_delete" type="submit" name="delete" >D</button></td>
 		<td><button class="db_input db_update" type="submit" name="id" value="<%= tr.id %>">U</button></td>

@@ -72,7 +72,6 @@ class Table {
 			});
 		});
 		rtr.post("/update", (req, res) => {
-			console.log("Updating row with id:", req.body.id);
 			let entries = Object.entries(req.body).filter(key => key !== "id");
 			let queryPairs = entries.map(([key, value]) => `${key} = '${value}'`).join(", ");
 			
@@ -99,6 +98,9 @@ class Table {
 						body[fileKey] = `/srcs/imgs/${file.name}`;
 					}
 				}
+			}
+			if (body.startdate) {
+				console.log(body.startdate);
 			}
 			let query = `INSERT INTO ${this.name} (${Object.keys(body).join(",")}) VALUES (${Object.values(body).map(o=>`'${o}'`).join(",")})`;
 			this.client.query(query, (err, res) => {
@@ -143,6 +145,13 @@ class DBEditor {
 				return;
 			}
 			next();
+		});
+		client.query('SET TIME ZONE \'UTC\'', (err) => {
+			if (err) {
+				console.error('Error setting time zone:', err);
+			} else {
+				console.log('Time zone set to UTC');
+			}
 		});
 		client.query(`SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE' AND TABLE_SCHEMA='public'`, (err, res) => {
 			if (err) {

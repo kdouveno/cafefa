@@ -20,7 +20,7 @@ class Ajax {
 	 *
 	 * @returns {boolean} Returns false to prevent default form submission behavior, or undefined if an error occurs.
 	 */
-	async ajax(e, fx, options, ...parameters){
+	async ajax(e, fx, options, ...parameters){ // TODO: make params an object
 		let formData;
 		let action;
 		let method;
@@ -90,7 +90,6 @@ class Ajax {
 	$replace(res, target){
 		res.text().then(html => {
 			target.insertAdjacentHTML("afterend", html);
-			console.log(html);
 			
 			target.remove();
 		});

@@ -2,9 +2,9 @@ tables = {};
 class Table {
 	constructor(tableName){
 		this.tableName = tableName;
-		this.table = document.querySelector(`#db_${tableName} .db_table`);
+		this.div = document.getElementById(`db_${tableName}`);
+		this.table = this.div.querySelector(`.db_table`);
 		let mut = new MutationObserver((mutations) => {
-			console.log("Table mutation observer triggered:", mutations);
 			mutations.forEach(m=>{	
 				m.addedNodes.forEach(node => {
 					if (node.nodeType !== Node.ELEMENT_NODE || !node.matches(".db_row")) return;
@@ -19,10 +19,8 @@ class Table {
 			});
 		});
 		mut.observe(this.table.querySelector(".db_body"), { childList: true, subtree: true });
-		this.insertForm = document.getElementById(`db_${tableName}_insert`);
-		this.updateForm = document.getElementById(`db_${tableName}_update`);
 		this.searchForm = document.getElementById(`db_${tableName}_search`);
-		if (!(this.insertForm && this.updateForm && this.searchForm)) {
+		if (!(this.searchForm)) {
 			throw new Error(`Forms not found for table ${tableName}`);
 		}
 		tables[this.tableName] = this;
@@ -30,9 +28,7 @@ class Table {
 
 	}
 	initSubmits(){
-		this.insertForm.addEventListener("submit", (event) => ajax(event, ["inject", ()=>{
-				this.search();
-			}], null, document.querySelector(`#db_${this.tableName} .db_insert .res`)));
+		this.div.querySelector(".db_insert_submit").addEventListener("click", () => {this.insert()});
 		this.searchForm.addEventListener("submit", (event) => this.search(event));
 		document.querySelectorAll(`#db_${this.tableName} .db_input.db_update`).forEach(input => {
 			input.addEventListener("click", (event) => {
@@ -62,7 +58,7 @@ class Table {
 			})
 			.catch(error => console.error("Error:", error));
 	}
-	update(row){
+	update(row){ //TODO: make a form gatherer to be used in update and insert
 		console.log("Updating row with id:", row.dataset.id);
 		
 		const inputs = row.querySelectorAll(".db_input:not([type='submit'])");
@@ -70,15 +66,43 @@ class Table {
 		inputs.forEach(input => {
 			if(input.type === "checkbox"){
 				form[input.name] = input.checked ? 1 : 0;
-			}else if(input.type === "radio"){
+			} else if(input.type === "radio"){
 				if(input.checked){
 					form[input.name] = input.value;
 				}
+			} else if(input.type === "datetime-local"){
+				console.log(input.value);
+				form[input.name] = new Date(input.value).toISOString();
+				console.log(form[input.name]);
 			}else{
 				form[input.name] = input.value;
 			}
 		});
 		ajax(null, "replace", {form: form, method: "POST", action: `/db/${this.tableName}/update`}, row);
+
+	}
+	insert(){
+			const row = this.div.querySelector(".db_insert");			
+			const inputs = row.querySelectorAll(".db_input:not([type='submit'])");
+			const form = {};
+			inputs.forEach(input => {
+				if(input.type === "checkbox"){
+					form[input.name] = input.checked ? 1 : 0;
+				} else if(input.type === "radio"){
+					if(input.checked){
+						form[input.name] = input.value;
+					}
+				} else if(input.type === "datetime-local"){
+					console.log(input.value);
+					form[input.name] = new Date(input.value).toISOString();
+					console.log(form[input.name]);
+				}else{
+					form[input.name] = input.value;
+				}
+			});
+		ajax(null, ()=>{
+			this.search();
+		}, {form: form, method: "POST", action: `/db/${this.tableName}/insert`}, row);
 	}
 	search(event){
 		ajax(event ?? this.searchForm, "inject", null, document.querySelector(`#db_${this.tableName} .db_body`));
