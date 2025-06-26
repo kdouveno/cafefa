@@ -21,9 +21,17 @@ for(let tr of body) { %>
 	<tr class="db_row" data-id="<%= tr.id %>">
 		<td colspan="2"></td>
 		<% for(let field of template) { 
-			if (!field.input.match(/id|system/)) { %>
-			<td><input name="<%= field.name %>" class="db_input" type="<%= field.input == "file" ? "text" : field.input %>" value="<%= field.input == "datetime-local" ? datetimeFormat(tr[field.name]) : tr[field.name] %>"></td>
-		<% }} %>
+			if (!field.input.match(/id|system/)) { 
+				if (field.input == "ref") { %>
+					<td class="db_ref_container">
+						<input class="db_input db_ref_search" data-name="<%= field.name %>" data-field="<%= field.ref %>" value="<%= tr[field.ref] %>"></input>
+						<div class="db_option_container" tabindex="0" data-field="<%= field.ref %>">
+						</div>
+						<input type="hidden" class="db_input db_ref" name="<%= field.name %>" value="<%= tr[field.name] %>">
+					</td>
+				<% } else { %>
+					<td><input name="<%= field.name %>" class="db_input" type="<%= field.input == "file" ? "text" : field.input %>" value="<%= field.input == "datetime-local" ? datetimeFormat(tr[field.name]) : tr[field.name] %>"></td>
+		<% }}} %>
 		<td><button class="db_input db_delete" type="submit" name="delete" >D</button></td>
 		<td><button class="db_input db_update" type="submit" name="id" value="<%= tr.id %>">U</button></td>
 	</tr>

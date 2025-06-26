@@ -1,4 +1,20 @@
 tables = {};
+function debounceCall(callback, delay, ...rest) {
+	let timeout;
+	return function(event) {
+		clearTimeout(timeout);
+		timeout = setTimeout(() => callback(event, ...rest), delay);
+	};
+}
+// function debounceCall(callback, delay, ...rest) {
+// 	let lastTime = null;
+// 	return function(event) {
+// 		const currentTime = Date.now();
+// 		if (lastTime && currentTime - lastTime >= delay)
+// 			callback(event, ...rest);
+// 		lastTime = currentTime;
+// 	};
+// }
 class Table {
 	constructor(tableName){
 		this.tableName = tableName;
@@ -8,13 +24,8 @@ class Table {
 			mutations.forEach(m=>{	
 				m.addedNodes.forEach(node => {
 					if (node.nodeType !== Node.ELEMENT_NODE || !node.matches(".db_row")) return;
-					let del;
-					del = node.querySelector(".db_delete")
-					if (node.querySelector && del)
-						del.addEventListener("click", () => this.delete(node));
-					del = node.querySelector(".db_update")
-					if (node.querySelector && del)
-						del.addEventListener("click", () => this.update(node));
+					
+					this.InitRowEvents(node);
 				});
 			});
 		});
@@ -30,18 +41,47 @@ class Table {
 	initSubmits(){
 		this.div.querySelector(".db_insert_submit").addEventListener("click", () => {this.insert()});
 		this.searchForm.addEventListener("submit", (event) => this.search(event));
-		document.querySelectorAll(`#db_${this.tableName} .db_input.db_update`).forEach(input => {
+		window.addEventListener("pointerdown", (event) => {
+			console.log(event.target, !!event.target.closest(".db_ref_container"));
+			
+			if (event.target.closest(".db_ref_container")) return; // If the click is inside a ref container, do nothing
+			this.hideRefsOptions();
+		});
+		this.div.querySelectorAll(".db_row").forEach(row => {
+			this.InitRowEvents(row);
+		});
+	}
+	InitRowEvents(row){
+		row.querySelectorAll(`.db_input.db_update`).forEach(input => {
 			input.addEventListener("click", (event) => {
 				event.preventDefault();
-				this.update(event.target.closest(".db_row"));
+				this.update(row);
 				return false;
 			});
 		});
-		document.querySelectorAll(`#db_${this.tableName} .db_input.db_delete`).forEach(input => {
+		row.querySelectorAll(`.db_input.db_delete`).forEach(input => {
 			input.addEventListener("click", (event) => {
-				this.delete(event.target.closest(".db_row"));
+				this.delete(row);
 			});
 		});
+
+		row.querySelectorAll(`.db_ref_container`).forEach(cont => {
+			cont.querySelector(".db_ref_search").addEventListener("input", debounceCall((event) => {
+				this.searchRefOptions(event.target);
+			}, 300));
+			cont.addEventListener("click", (event) => {
+				event.stopPropagation(); // Prevents the click from bubbling up to the window
+				this.showRefOptions(cont);
+			});	
+			cont.addEventListener("mouseleave", (event) => {
+				// this.hideRefOptions(cont);
+			});
+		});
+	}
+	setOption(option){
+		let db_ref = option.closest(".db_ref_container");
+		db_ref.querySelector(".db_ref").value = option.dataset.value;
+		db_ref.querySelector(".db_ref_search").value = option.textContent;
 	}
 	delete(row){
 		console.log("Deleting row with id:", row.dataset.id);
@@ -107,6 +147,41 @@ class Table {
 	search(event){
 		ajax(event ?? this.searchForm, "inject", null, document.querySelector(`#db_${this.tableName} .db_body`));
 		return false;
+	}
+	searchRefOptions(select){
+		let container = select.nextElementSibling;
+		ajax(null, ["inject", (res)=>{
+			let options = container.querySelectorAll(".db_option");
+			debugger;
+			options.forEach(option => {
+				option.addEventListener("mousedown", (event) => {
+					event.preventDefault(); // Prevents the default action of the mousedown event
+					event.stopPropagation(); // Stops the event from bubbling up to parent elements
+					console.log("triggered");
+					event.target.focus();
+					
+					this.setOption(event.target);
+					return false;
+				});
+			});
+			return res;
+		}], {action: `/db/${this.tableName}/options/${select.dataset.field}?${(new URLSearchParams({field: select.dataset.name, search: select.value})).toString()}`, method: "GET"}, container);
+	}
+	showRefOptions(cont){
+		this.hideRefsOptions(cont);
+		cont.classList.add("shown");
+	}
+	hideRefOptions(cont){
+		console.log("hideRefOptions called");
+		
+		cont.classList.remove("shown");
+	}
+	hideRefsOptions(cont = null){
+		this.div.querySelectorAll(".db_ref_container.shown").forEach(c => {
+			if (!cont || c !== cont) {
+				this.hideRefOptions(c);
+			}
+		});
 	}
 }
 

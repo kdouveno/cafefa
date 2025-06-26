@@ -24,54 +24,54 @@ class Ajax {
 		let formData;
 		let action;
 		let method;
-		try {
-			if (e instanceof Event) {
-				if(e.target.tagName !== 'FORM'){
-					if(!options) throw new Error("Options are not defined though target isn't a form.");
-						
-				} else {
-					e.preventDefault();
-					e = e.target;
-				}
+
+		if (e instanceof Event) {
+			if(e.target.tagName !== 'FORM'){
+				if(!options) throw new Error("Options are not defined though target isn't a form.");
+					
+			} else {
+				e.preventDefault();
+				e = e.target;
 			}
-			if (options) {
-					if(!options.action)
-						throw new Error("Form action is not defined.");
-					if(!options.method)
-						throw new Error("Form method is not defined.");
-					if(!options.form)
-						throw new Error("Form is not defined.");
-					action = options.action;
-					method = options.method;
-					formData = this.manualForm(options.form);
-			}
-			if (e instanceof HTMLFormElement) {
-				if (!e.action)
+		}
+		if (options) {
+				if(!options.action)
 					throw new Error("Form action is not defined.");
-				if (!e.method)
+				if(!options.method)
 					throw new Error("Form method is not defined.");
-				action = e.action;
-				method = e.method;
-				formData = new FormData(e);
+				if(!options.form)
+					console.warn("Form is not defined.");
+				action = options.action;
+				method = options.method;
+				if(!options.method.match(/GET|HEAD/))
+					formData = this.manualForm(options.form);
+		}
+		if (e instanceof HTMLFormElement) {
+			if (!e.action)
+				throw new Error("Form action is not defined.");
+			if (!e.method)
+				throw new Error("Form method is not defined.");
+			action = e.action;
+			method = e.method;
+			formData = new FormData(e);
+		}
+		if (!(fx instanceof Array))
+			fx = [fx];
+		fx = fx.map(f => {
+			if (typeof f === "string")
+				f = this["$" + f];
+			if (typeof f !== "function"){
+				throw new Error("Invalid callback function. Must be a function or a string referencing a method.");
 			}
-			if (!(fx instanceof Array))
-				fx = [fx];
-			fx = fx.map(f => {
-				if (typeof f === "string")
-					f = this["$" + f];
-				if (typeof f !== "function"){
-					throw new Error("Invalid callback function. Must be a function or a string referencing a method.");
-				}
-				return f;
-			});
-			let res = await fetch(action, { method: method, body: formData}).then(res => {if (res.error) throw new Error(res.error); return res;});
-			for(let f of fx){
-				res = await f(await res, ...parameters);
-			}
-		}catch(error) {
-			console.error("Error creating form:", error.message);
-			return false;
-		};
+			return f;
+		});
+		let res = await fetch(action, { method: method, body: formData});
+		if (res.error)
+			throw new Error(res.error);
+		for(let f of fx){
+			res = await f(res, ...parameters);
+		}
+
 		return false;
 	}
 
@@ -81,18 +81,15 @@ class Ajax {
 			formData.append(o, form[o]);
 		return formData;
 	}
-	$inject(res, target){
-		res.text().then(html => {
-			target.innerHTML = html;
-		});
+	async $inject(res, target){
+		let html = await res.text()
+		target.innerHTML = html;
 		return res;
 	}
-	$replace(res, target){
-		res.text().then(html => {
-			target.insertAdjacentHTML("afterend", html);
-			
-			target.remove();
-		});
+    async $replace(res, target){
+		let html = res.text()
+		target.insertAdjacentHTML("afterend", html);
+		target.remove();
 		return res;
 	}
 }

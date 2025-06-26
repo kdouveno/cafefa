@@ -1,12 +1,16 @@
 -- Database: cafefa
 
 -- DROP DATABASE IF EXISTS cafefa;
+-- DROP TABLE Articles;
+-- DROP TABLE Images;
 -- DROP TABLE Fields;
+-- DROP TABLE Timetable;
 CREATE TABLE IF NOT EXISTS Fields (
 	tablename text,
 	fieldname text,
 	inputType text,
 	template text default 'default',
+	ref text DEFAULT NULL,
 	UNIQUE (tablename, fieldname, template)
 );
 
@@ -26,7 +30,7 @@ CREATE TABLE IF NOT EXISTS Articles (
 	id serial unique primary key,
 	title text,
 	content text,
-	imgid integer references Images(id),
+	img integer references Images(id),
 	timetableid integer references Timetable(id),
 	startdate date,
 	enddate date,
@@ -39,7 +43,7 @@ CREATE TABLE IF NOT EXISTS Articles (
 INSERT INTO Fields VALUES ('articles', 'id', 'id') ON CONFLICT DO NOTHING;
 INSERT INTO Fields VALUES ('articles', 'title', 'text') ON CONFLICT DO NOTHING;
 INSERT INTO Fields VALUES ('articles', 'content', 'textarea') ON CONFLICT DO NOTHING;
-INSERT INTO Fields VALUES ('articles', 'imgid', 'system') ON CONFLICT DO NOTHING;
+INSERT INTO Fields VALUES ('articles', 'img', 'ref', default, 'Images.title') ON CONFLICT DO NOTHING;
 INSERT INTO Fields VALUES ('articles', 'timetableid', 'system') ON CONFLICT DO NOTHING;
 INSERT INTO Fields VALUES ('articles', 'startdate', 'datetime-local') ON CONFLICT DO NOTHING;
 INSERT INTO Fields VALUES ('articles', 'enddate', 'datetime-local') ON CONFLICT DO NOTHING;

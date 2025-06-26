@@ -13,7 +13,7 @@ class Table {
 			}
 			this.structure = res.rows;
 			
-			this.client.query(`SELECT fieldname, inputtype, template FROM fields WHERE tablename = '${name}'`, (err, res) => {
+			this.client.query(`SELECT fieldname, inputtype, template, ref FROM fields WHERE tablename = '${name}'`, (err, res) => {
 				if (err) {
 					console.error(err);
 					return;
@@ -22,7 +22,7 @@ class Table {
 				for (let o of res.rows) {
 					if (!templates[o.template])
 						templates[o.template] = [];	
-					templates[o.template].push({name: o.fieldname, input: o.inputtype});
+					templates[o.template].push({name: o.fieldname, input: o.inputtype, ref: o.ref});
 				}
 				this.templates = templates;
 			});
@@ -84,7 +84,14 @@ class Table {
 				res.render("views/table_body", {template: this.templates.default, body: result.rows});
 			});
 		});
-
+		rtr.get("/options/:field", (req, res) => {
+			this.optionsRequest(req.params.field, req.query.field, req.query.search, req.query.template).then(body => {
+				res.render("views/options", {options: body});
+			}).catch(err => {
+				console.error(err);
+				res.status(500).send({"Internal Server Error": err.detail});
+			});
+		});
 		this.router = rtr;
 	};
 	insertRequest(body){
@@ -114,15 +121,31 @@ class Table {
 		});
 	}
 	searchRequest(template, body){
-		//todo: add search request
+		//todo: add search request	
 		return new Promise((resolve, reject) => {
+			let joins = [];
 			let select = this.templates.default.reduce((t, o, i)=>{
-				if (o.input !== "system") {
-					return t + (t ? " , " : "") + o.name;
+				let a;
+				if (o.input === "ref") {
+					if (o.ref){
+						let [table, field] = o.ref.split('.');
+						t += `${t ? ', ': ''}(${o.ref}) AS "${o.ref}"`;
+						joins.push({table, field, name: o.name});
+					} else
+						return t;
 				}
-				return t;
+				if (o.input !== "system") 
+					a = this.name + '.' + o.name;
+				else
+					return t;
+				if (t)
+					a = `, ${a}`;
+				return t + a;
 			}, "");
-			let query = `SELECT ${select} FROM ${this.name}`;
+			if (joins.length > 0)
+				joins = joins.map(join => `LEFT JOIN ${join.table} ON ${this.name}.${join.name} = ${join.table}.id`).join(" ");
+			let query = `SELECT ${select} FROM ${this.name} ${joins}`;
+
 			this.client.query(query, (err, res) => {
 				if (err) {
 					console.error(err);
@@ -132,6 +155,26 @@ class Table {
 				resolve(res.rows);
 			});
 		});
+	}
+	optionsRequest(target, field, search, template = "default") {
+
+		return new Promise((resolve, reject) => {
+			let [ttable, tfield] = target.split('.');
+			let ref;
+			if (this.templates[template] && (ref = this.templates[template].find(o => o.name === field)) && ref.ref === target) {
+				this.client.query(`SELECT id, ${tfield} FROM ${ttable} WHERE ${tfield} ILIKE $1`, [`%${search}%`], (err, res) => {
+					if (err) {
+						console.error(err);
+						reject(err);
+						return;
+					}
+					resolve(res.rows);
+				});
+			}
+		});
+	}
+	getOptions(field, template = "default") {
+		
 	}
 }
 

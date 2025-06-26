@@ -3,6 +3,7 @@
 	s:"db_"+table+"_search",
 	u:"db_"+table+"_update"	
 } %>
+<link rel="stylesheet" href="/srcs/styles/db_table.css">
 <div id="db_<%= table %>" class="db_container">
 	<form id="db_<%= table %>_search" class="db_search" action="/db/<%= table %>/search" method="post"></form>
 

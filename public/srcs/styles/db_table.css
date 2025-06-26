@@ -1,0 +1,27 @@
+.db_table .db_body .db_input:not(:hover):not(:focus):not(.shown),
+.db_ref_container:not(:focus-within) .db_input {
+	background-color: transparent;
+	border-color: transparent;
+}
+.db_row{
+	position: relative;
+}
+.db_row:focus-within {
+	outline: black solid 2px;
+	border-radius: 2px;
+	z-index: 1;
+}
+
+.db_ref_container{
+	position: absolute;
+}
+.db_option_container {
+	display: none;
+	background-color: white;
+	border: 2px solid black;
+	border-radius: 2px;
+	width: 100%;
+}
+.db_ref_container.shown .db_option_container {
+	display: block;
+}
