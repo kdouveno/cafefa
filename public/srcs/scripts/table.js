@@ -42,7 +42,6 @@ class Table {
 		this.div.querySelector(".db_insert_submit").addEventListener("click", () => {this.insert()});
 		this.searchForm.addEventListener("submit", (event) => this.search(event));
 		window.addEventListener("pointerdown", (event) => {
-			console.log(event.target, !!event.target.closest(".db_ref_container"));
 			
 			if (event.target.closest(".db_ref_container")) return; // If the click is inside a ref container, do nothing
 			this.hideRefsOptions();
@@ -115,9 +114,7 @@ class Table {
 					form[input.name] = input.value;
 				}
 			} else if(input.type === "datetime-local"){
-				console.log(input.value);
 				form[input.name] = new Date(input.value).toISOString();
-				console.log(form[input.name]);
 			}else{
 				form[input.name] = input.value;
 			}
@@ -137,9 +134,7 @@ class Table {
 						form[input.name] = input.value;
 					}
 				} else if(input.type === "datetime-local"){
-					console.log(input.value);
 					form[input.name] = new Date(input.value).toISOString();
-					console.log(form[input.name]);
 				}else{
 					form[input.name] = input.value;
 				}
@@ -160,7 +155,6 @@ class Table {
 				option.addEventListener("mousedown", (event) => {
 					event.preventDefault(); // Prevents the default action of the mousedown event
 					event.stopPropagation(); // Stops the event from bubbling up to parent elements
-					console.log("triggered");
 					event.target.focus();
 					
 					this.setOption(event.target);
@@ -175,8 +169,6 @@ class Table {
 		cont.classList.add("shown");
 	}
 	hideRefOptions(cont){
-		console.log("hideRefOptions called");
-		
 		cont.classList.remove("shown");
 	}
 	hideRefsOptions(cont = null){

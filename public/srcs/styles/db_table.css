@@ -25,7 +25,11 @@
 .db_ref_container.shown .db_option_container {
 	display: block;
 }
-
+.db_table>thead {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+}
 .db_search {
 	display: none;
 }

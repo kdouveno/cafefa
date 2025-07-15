@@ -1,7 +1,7 @@
 -- Database: cafefa
 
 -- DROP DATABASE IF EXISTS cafefa;
--- DROP TABLE Articles;
+DROP TABLE Articles;
 -- DROP TABLE Images;
 -- DROP TABLE Fields;
 -- DROP TABLE Timetable;
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS Articles (
 	content text,
 	img integer references Images(id),
 	timetableid integer references Timetable(id),
-	startdate date,
-	enddate date,
+	startdate timestamptz,
+	enddate timestamptz,
 	created_at timestamp default current_timestamp,
 	priooffset integer default 0,
 	headline integer default '14',
