@@ -29,7 +29,7 @@ for(let tr of body) { %>
 						<input type="hidden" class="db_input db_ref" name="<%= field.name %>" value="<%= tr[field.name] %>">
 					</td>
 				<% } else { %>
-					<td><input name="<%= field.name %>" class="db_input" type="<%= field.input == "file" ? "text" : field.input %>" value="<%= field.input == "datetime-local" ? datetimeFormat(tr[field.name]) : tr[field.name] %>"></td>
+					<td><input name="<%= field.name %>" class="db_input" type="<%= field.input == "file" ? "text" : field.input %>" <%= field.input == "checkbox" && tr[field.name] == true ? "checked" : "" %> value="<%= field.input == "datetime-local" ? datetimeFormat(tr[field.name]) : tr[field.name] %>"></td>
 		<% }}} %>
 		<td><button class="db_input db_delete" type="submit" name="delete" >D</button></td>
 		<td><button class="db_input db_update" type="submit" name="id" value="<%= tr.id %>">U</button></td>

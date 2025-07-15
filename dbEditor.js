@@ -116,7 +116,8 @@ class Table {
 					}
 				}
 			}
-			let query = `INSERT INTO ${this.name} (${Object.keys(body).join(",")}) VALUES (${Object.values(body).map(o=>`'${o}'`).join(",")})`;
+			const pairs = Object.entries(body).filter(([key, value]) => key !== "id" && value !== "");
+			const query = `INSERT INTO ${this.name} (${Object.keys(pairs).join(",")}) VALUES (${Object.values(pairs).map(o=>`'${o}'`).join(",")})`;
 			this.client.query(query, (err, res) => {
 				if (err) {
 					console.error(err);

@@ -69,16 +69,18 @@ class Table {
 
 	initRefOptions(row){
 		row.querySelectorAll(`.db_ref_container`).forEach(cont => {
-			cont.querySelector(".db_ref_search").addEventListener("input", debounceCall((event) => {
+			const searchInput = cont.querySelector(".db_ref_search");
+			searchInput.addEventListener("input", debounceCall((event) => {
 				this.searchRefOptions(event.target);
 			}, 300));
-			cont.addEventListener("click", (event) => {
+			searchInput.addEventListener("focus", (event) => {
 				event.stopPropagation(); // Prevents the click from bubbling up to the window
 				this.showRefOptions(cont);
 			});	
 			cont.addEventListener("mouseleave", (event) => {
 				// this.hideRefOptions(cont);
 			});
+			this.searchRefOptions(searchInput);
 		});
 	}
 	setOption(option){
@@ -108,13 +110,13 @@ class Table {
 		const form = {id: row.dataset.id};
 		inputs.forEach(input => {
 			if(input.type === "checkbox"){
-				form[input.name] = input.checked ? 1 : 0;
+				form[input.name] = input.checked ? true : false;
 			} else if(input.type === "radio"){
 				if(input.checked){
 					form[input.name] = input.value;
 				}
 			} else if(input.type === "datetime-local"){
-				form[input.name] = new Date(input.value).toISOString();
+				form[input.name] = input.value ? new Date(input.value).toISOString() : "";
 			}else{
 				form[input.name] = input.value;
 			}
@@ -128,13 +130,13 @@ class Table {
 			const form = {};
 			inputs.forEach(input => {
 				if(input.type === "checkbox"){
-					form[input.name] = input.checked ? 1 : 0;
+					form[input.name] = input.checked ? true : false;
 				} else if(input.type === "radio"){
 					if(input.checked){
 						form[input.name] = input.value;
 					}
 				} else if(input.type === "datetime-local"){
-					form[input.name] = new Date(input.value).toISOString();
+					form[input.name] = input.value ? new Date(input.value).toISOString() : "";
 				}else{
 					form[input.name] = input.value;
 				}
