@@ -47,11 +47,13 @@ class Table {
 			if (event.target.closest(".db_ref_container")) return; // If the click is inside a ref container, do nothing
 			this.hideRefsOptions();
 		});
+		this.initRefOptions(this.div.querySelector(".db_insert"));
 		this.div.querySelectorAll(".db_row").forEach(row => {
 			this.InitRowEvents(row);
 		});
 	}
 	InitRowEvents(row){
+		this.initRefOptions(row);
 		row.querySelectorAll(`.db_input.db_update`).forEach(input => {
 			input.addEventListener("click", (event) => {
 				event.preventDefault();
@@ -64,7 +66,9 @@ class Table {
 				this.delete(row);
 			});
 		});
+	}
 
+	initRefOptions(row){
 		row.querySelectorAll(`.db_ref_container`).forEach(cont => {
 			cont.querySelector(".db_ref_search").addEventListener("input", debounceCall((event) => {
 				this.searchRefOptions(event.target);
@@ -101,7 +105,7 @@ class Table {
 	update(row){ //TODO: make a form gatherer to be used in update and insert
 		console.log("Updating row with id:", row.dataset.id);
 		
-		const inputs = row.querySelectorAll(".db_input:not([type='submit'])");
+		const inputs = row.querySelectorAll(".db_input:not([type='submit']):not(.db_ref_search)");
 		const form = {id: row.dataset.id};
 		inputs.forEach(input => {
 			if(input.type === "checkbox"){
@@ -123,7 +127,7 @@ class Table {
 	}
 	insert(){
 			const row = this.div.querySelector(".db_insert");			
-			const inputs = row.querySelectorAll(".db_input:not([type='submit'])");
+			const inputs = row.querySelectorAll(".db_input:not([type='submit']):not(.db_ref_search)");
 			const form = {};
 			inputs.forEach(input => {
 				if(input.type === "checkbox"){
@@ -152,7 +156,6 @@ class Table {
 		let container = select.nextElementSibling;
 		ajax(null, ["inject", (res)=>{
 			let options = container.querySelectorAll(".db_option");
-			debugger;
 			options.forEach(option => {
 				option.addEventListener("mousedown", (event) => {
 					event.preventDefault(); // Prevents the default action of the mousedown event

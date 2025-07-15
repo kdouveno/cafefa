@@ -2,7 +2,9 @@
 	i:"db_"+table+"_insert",
 	s:"db_"+table+"_search",
 	u:"db_"+table+"_update"	
-} %>
+}
+
+%>
 <link rel="stylesheet" href="/srcs/styles/db_table.css">
 <div id="db_<%= table %>" class="db_container">
 	<form id="db_<%= table %>_search" class="db_search" action="/db/<%= table %>/search" method="post"></form>
@@ -21,12 +23,20 @@
 				<th colspan="2">Ajouter</th>
 				<% for( let field of template ) { 
 					if (field.input.match(/id|system/)) continue ; %>
+				<% if (field.input == "ref") { %>
+					<td class="db_ref_container">
+						<input class="db_input db_ref_search" data-name="<%= field.name %>" data-field="<%= field.ref %>" placeholder="<%= field.name %>"></input>
+						<div class="db_option_container" tabindex="0" data-field="<%= field.ref %>">
+						</div>
+						<input type="hidden" class="db_input db_ref" name="<%= field.name %>">
+					</td>
+				<% } else { %>
 					<td><input class="db_input" form="<%= f.i %>" type="<%= field.input %>" name="<%= field.name %>" placeholder="<%= field.name %>"></td>
-				<% } %>
+				<% }} %>
 				<td><button class="db_insert_submit" type="submit" form="<%= f.i %>">A</button></td>
 				<td class="res"></td>
 			</tr>
-			<tr>
+			<tr class="db_search">
 				<th rowspan="2">Recherche</th>
 				<th>Max</th>
 				<% for( let field of template ) {
@@ -35,7 +45,7 @@
 				<% } %>
 				<td rowspan="2">R</td>
 			</tr>
-			<tr>
+			<tr class="db_search">
 				<th>Min</th>
 				<% for( let field of template ) {
 					if (field.input.match(/id|system/)) continue ; %>

@@ -25,3 +25,7 @@
 .db_ref_container.shown .db_option_container {
 	display: block;
 }
+
+.db_search {
+	display: none;
+}

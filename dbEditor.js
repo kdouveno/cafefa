@@ -73,15 +73,25 @@ class Table {
 		});
 		rtr.post("/update", (req, res) => {
 			let entries = Object.entries(req.body).filter(key => key !== "id");
+
 			let queryPairs = entries.map(([key, value]) => `${key} = '${value}'`).join(", ");
-			
-			this.client.query(`UPDATE ${this.name} SET ${queryPairs} WHERE id = ${req.body.id} RETURNING *`, (err, result) => {
-				if (err) {
-					console.error(err);
-					res.status(500).send({"Internal Server Error": err.detail});
+
+			this.client.query(`UPDATE ${this.name} SET ${queryPairs} WHERE id = ${req.body.id}`, (qerr, qres) => {
+				if (qerr) {
+					console.error(qerr);
+					res.status(500).send({"Internal Server Error": qerr.detail});
 					return;
 				}
-				res.render("views/table_body", {template: this.templates.default, body: result.rows});
+				this.searchRequest(this.templates.default, {}, req.body.id).then(result => {
+					if (result.length === 0) {
+						res.status(404).send({"Not Found": "No record found with the given ID."});
+						return;
+					}
+					res.render("views/table_body", {template: this.templates.default, body: result});
+				}).catch(err => {
+					console.error(err);
+					res.status(500).send({"Internal Server Error": err.detail});
+				});
 			});
 		});
 		rtr.get("/options/:field", (req, res) => {
@@ -106,9 +116,6 @@ class Table {
 					}
 				}
 			}
-			if (body.startdate) {
-				console.log(body.startdate);
-			}
 			let query = `INSERT INTO ${this.name} (${Object.keys(body).join(",")}) VALUES (${Object.values(body).map(o=>`'${o}'`).join(",")})`;
 			this.client.query(query, (err, res) => {
 				if (err) {
@@ -120,7 +127,7 @@ class Table {
 			});
 		});
 	}
-	searchRequest(template, body){
+	searchRequest(template, body, id = null){
 		//todo: add search request	
 		return new Promise((resolve, reject) => {
 			let joins = [];
@@ -144,7 +151,7 @@ class Table {
 			}, "");
 			if (joins.length > 0)
 				joins = joins.map(join => `LEFT JOIN ${join.table} ON ${this.name}.${join.name} = ${join.table}.id`).join(" ");
-			let query = `SELECT ${select} FROM ${this.name} ${joins}`;
+				let query = `SELECT ${select} FROM ${this.name} ${joins} ${id ? `WHERE ${this.name}.id = '${id}'` : ''}`; //todo ducktape 'where' to revamp
 
 			this.client.query(query, (err, res) => {
 				if (err) {

@@ -87,7 +87,7 @@ class Ajax {
 		return res;
 	}
     async $replace(res, target){
-		let html = res.text()
+		let html = await res.text()
 		target.insertAdjacentHTML("afterend", html);
 		target.remove();
 		return res;
